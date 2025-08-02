@@ -52,6 +52,7 @@ SELECT * FROM customers;
 SELECT * FROM orders;
 
 
+🟢 Beginner Level
 
 -- 1) Retrieve all books in the "Fiction" genre:
 
@@ -76,31 +77,46 @@ where country = 'Canada';
 SELECT sum(stock) as Total_stock
 FROM Books;
 
-
--- 5) Find the details of the most expensive book:
-
-SELECT * FROM Books
-ORDER BY Price DESC
-LIMIT 1;
-
-
--- 6) Show all customers who ordered more than 1 quantity of a book:
+-- 5) Show all customers who ordered more than 1 quantity of a book:
 
 select * from orders
 where quantity > 1;
 
 
--- 7) Retrieve all orders where the total amount exceeds $20:
+🟡 Intermediate Level:
+
+-- 1) Find the details of the most expensive book:
+
+SELECT * FROM Books
+ORDER BY Price DESC
+LIMIT 1;
+
+-- 2) Retrieve all orders where the total amount exceeds $20:
 select * from orders
 where total_amount > 20
 order by total_amount;
 
 
--- 8) Calculate the total revenue generated from all orders:
+-- 3) Calculate the total revenue generated from all orders:
 
 select sum(total_amount) as Total_revenue from orders;
 
 
+-- 4) Find the average price of books in the "Fantasy" genre:
+
+select round(avg(price),2) as avg_price
+from Books
+where genre = 'Fantasy'
+
+-- 5) Show the top 3 most expensive books of 'Fantasy' Genre :
+
+select * from Books
+where genre = 'Fantasy'
+order by price desc
+limit 3
+
+
+🔴 Advanced Level:
 
 -- 1) Retrieve the total number of books sold for each genre:
 
@@ -111,16 +127,7 @@ group by b.genre
 order by Total_books_sold desc;
 
 
-
--- 2) Find the average price of books in the "Fantasy" genre:
-
-select round(avg(price),2) as avg_price
-from Books
-where genre = 'Fantasy'
-
-
-
--- 3) List customers who have placed at least 2 orders:
+-- 2) List customers who have placed at least 2 orders:
 
 select c.name, o.customer_id, count(o.order_id) as Total_order
 from  orders o
@@ -130,8 +137,7 @@ having count(o.order_id) >=2
 order by Total_order;
 
 
-
--- 4) Find the most frequently ordered book:
+-- 3) Find the most frequently ordered book:
 
 SELECT o.Book_id, b.title, COUNT(o.order_id) AS ORDER_COUNT
 FROM orders o
@@ -140,17 +146,7 @@ GROUP BY o.book_id, b.title
 ORDER BY ORDER_COUNT DESC LIMIT 1;
 
 
-
--- 5) Show the top 3 most expensive books of 'Fantasy' Genre :
-
-select * from Books
-where genre = 'Fantasy'
-order by price desc
-limit 3
-
-
-
--- 6) Retrieve the total quantity of books sold by each author:
+-- 4) Retrieve the total quantity of books sold by each author:
 
 select b.author, sum(o.quantity) as Total_books_sold
 from Books b
@@ -159,8 +155,7 @@ group by b.author
 order by Total_books_sold desc;
 
 
-
--- 7) List the cities where customers who spent over $30 are located:
+-- 5) List the cities where customers who spent over $30 are located:
 
 SELECT DISTINCT c.city, total_amount
 FROM orders o
@@ -169,8 +164,7 @@ WHERE o.total_amount > 30
 order by total_amount;
 
 
-
--- 8) Find the customer who spent the most money:
+-- 6) Find the customer who spent the most money:
 
 select c.name, sum(o.total_amount) as Total_spend
 from customers c
@@ -180,8 +174,7 @@ order by Total_spend desc
 limit 1
 
 
-
---9) Calculate the units left in stock after orders (per book):
+--7) Calculate the units left in stock after orders (per book):
 
 SELECT b.title,
        b.stock - COALESCE(SUM(o.quantity), 0) AS remaining_stock
@@ -191,8 +184,7 @@ GROUP BY b.book_id, b.title, b.stock
 order by remaining_stock ;
 
  
-
--- 10) Most sold books in each genre
+-- 8) Most sold books in each genre
 
 with cte as
 (SELECT b.title, b.genre, o.quantity,
@@ -203,8 +195,7 @@ select title,genre,quantity from cte
 where rnk=1;
 
 
-
--- 11) Total number of orders made by each customer.
+-- 9) Total number of orders made by each customer.
 
 select c.name, o.customer_id, count(o.order_id) as Total_order
 from  orders o
@@ -213,7 +204,7 @@ group by c.name, o.customer_id
 order by Total_order desc;
 
 
--- 12) Total revenue by genre:
+-- 10) Total revenue by genre:
 
 select b.genre,sum(o.total_amount) as total_revenue
 from Books b
@@ -222,7 +213,7 @@ group by genre
 order by total_revenue desc;
 
 
--- 13) Books that were never ordered:
+-- 11) Books that were never ordered:
 
 SELECT  b.book_id, b.title
 FROM books b
@@ -230,12 +221,13 @@ LEFT JOIN orders o ON b.book_id = o.book_id
 WHERE o.order_id IS NULL;
 
 
--- 14) Calculate year wise revenue
+-- 12) Calculate year-wise revenue:
 
 select extract(year from order_date) as year,
  sum(total_amount) as total_revenue
 from orders
 group by year;
+
 
 
 
